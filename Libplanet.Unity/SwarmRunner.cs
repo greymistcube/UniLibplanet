@@ -42,6 +42,7 @@ namespace Libplanet.Unity
         /// <summary>
         /// Start <see cref="Swarm{T}"/> bootstrap, preload and wait.
         /// </summary>
+        /// <param name="preload">Determines whether to preload or not.</param>
         /// <returns>It exists only for WaitUntil.</returns>
         public IEnumerator CoSwarmRunner(bool preload)
         {
