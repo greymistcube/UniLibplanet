@@ -26,6 +26,8 @@ namespace Libplanet.Unity
         Justification = "It's only instantiated by GameObject.AddComponent<T>() method.")]
     public class Agent : MonoBehaviour
     {
+        private AgentConfig _config;
+
         private Miner _miner;
         private Coroutine _minerCo;
 
@@ -132,8 +134,13 @@ namespace Libplanet.Unity
 
         private void Start()
         {
-            _swarmRunnerCo = StartCoroutine(_swarmRunner.CoSwarmRunner());
-            _minerCo = StartCoroutine(_miner.CoStart());
+            _swarmRunnerCo = StartCoroutine(_swarmRunner.CoSwarmRunner(_config.Preload));
+
+            if (_config.Mine)
+            {
+                _minerCo = StartCoroutine(_miner.CoStart());
+            }
+
             _processActionsCo = StartCoroutine(_actionWorker.CoProcessActions());
         }
 
@@ -150,6 +157,7 @@ namespace Libplanet.Unity
         private void ConfigureNode(
             IEnumerable<IRenderer<PolymorphicAction<ActionBase>>> renderers)
         {
+            _config = Utils.LoadAgentConfig(Paths.AgentConfigPath);
             SwarmConfig swarmConfig = Utils.LoadSwarmConfig(Paths.SwarmConfigPath);
             Block<PolymorphicAction<ActionBase>> genesis = Utils.LoadGenesisBlock(
                 Paths.GenesisBlockPath);

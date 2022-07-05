@@ -43,7 +43,7 @@ namespace Libplanet.Unity
         /// Start <see cref="Swarm{T}"/> bootstrap, preload and wait.
         /// </summary>
         /// <returns>It exists only for WaitUntil.</returns>
-        public IEnumerator CoSwarmRunner()
+        public IEnumerator CoSwarmRunner(bool preload)
         {
             var bootstrapTask = Task.Run(async () =>
             {
@@ -63,36 +63,39 @@ namespace Libplanet.Unity
 
             Debug.Log("PreloadingStarted event was invoked");
 
-            DateTimeOffset started = DateTimeOffset.UtcNow;
-            long existingBlocks = _blockChain?.Tip?.Index ?? 0;
-            Debug.Log("Starting preload...");
-
-            var swarmPreloadTask = Task.Run(async () =>
+            if (preload)
             {
-                await _swarm.PreloadAsync(
-                    progress: null,
-                    render: false,
-                    cancellationToken: _cancellationTokenSource.Token);
-            });
+                DateTimeOffset started = DateTimeOffset.UtcNow;
+                long existingBlocks = _blockChain?.Tip?.Index ?? 0;
+                Debug.Log("Starting preload...");
 
-            yield return new WaitUntil(() => swarmPreloadTask.IsCompleted);
-            DateTimeOffset ended = DateTimeOffset.UtcNow;
+                var swarmPreloadTask = Task.Run(async () =>
+                {
+                    await _swarm.PreloadAsync(
+                        progress: null,
+                        render: false,
+                        cancellationToken: _cancellationTokenSource.Token);
+                });
 
-            if (swarmPreloadTask.Exception is Exception exc)
-            {
-                Debug.LogErrorFormat(
-                    "Preload terminated with an exception: {0}",
-                    exc
+                yield return new WaitUntil(() => swarmPreloadTask.IsCompleted);
+                DateTimeOffset ended = DateTimeOffset.UtcNow;
+
+                if (swarmPreloadTask.Exception is Exception exc)
+                {
+                    Debug.LogErrorFormat(
+                        "Preload terminated with an exception: {0}",
+                        exc
+                    );
+                    throw exc;
+                }
+
+                var index = _blockChain?.Tip?.Index ?? 0;
+                Debug.LogFormat(
+                    "Preload finished; elapsed time: {0}; blocks: {1}",
+                    ended - started,
+                    index - existingBlocks
                 );
-                throw exc;
             }
-
-            var index = _blockChain?.Tip?.Index ?? 0;
-            Debug.LogFormat(
-                "Preload finished; elapsed time: {0}; blocks: {1}",
-                ended - started,
-                index - existingBlocks
-            );
 
             var swarmStartTask = Task.Run(async () =>
             {
