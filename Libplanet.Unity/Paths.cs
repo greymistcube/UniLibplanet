@@ -24,6 +24,12 @@ namespace Libplanet.Unity
             Path.Combine(Application.streamingAssetsPath, "swarm_config.json");
 
         /// <summary>
+        /// Path to storing a <see cref="AgentConfig"/>.
+        /// </summary>
+        public static readonly string AgentConfigPath =
+            Path.Combine(Application.streamingAssetsPath, "agent_config.json");
+
+        /// <summary>
         /// Path to storing chain data.
         /// </summary>
         public static readonly string StorePath =

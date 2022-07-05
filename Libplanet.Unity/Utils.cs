@@ -26,6 +26,18 @@ namespace Libplanet.Unity
         }
 
         /// <summary>
+        /// Creates a new <see cref="AgentConfig"/> and writes to <paramref name="path"/>.
+        /// If one already exists at <paramref name="path"/>, overwrites it.
+        /// </summary>
+        /// <param name="path">File path to save a <see cref="AgentConfig"/>.</param>
+        public static void CreateAgentConfig(string path)
+        {
+            AgentConfig agentConfig = new AgentConfig();
+            File.Delete(path);
+            File.WriteAllText(path, agentConfig.ToJson());
+        }
+
+        /// <summary>
         /// Creates a new genesis <see cref="Block{T}"/> and writes to <paramref name="path"/>.
         /// If one already exists at <paramref name="path"/>, overwrites it.
         /// </summary>
@@ -66,6 +78,24 @@ namespace Libplanet.Unity
             }
 
             return SwarmConfig.FromJson(File.ReadAllText(path));
+        }
+
+        /// <summary>
+        /// Loads an <see cref="AgentConfig"/> from <paramref name="path"/>.
+        /// </summary>
+        /// <param name="path">Path to a file containing a <see cref="AgentConfig"/>.</param>
+        /// <returns>A <see cref="AgentConfig"/> loaded from <paramref name="path"/>.</returns>
+        /// <exception cref="FileNotFoundException">If no file was found at
+        /// <paramref name="path"/>.</exception>
+        public static AgentConfig LoadAgentConfig(string path)
+        {
+            if (!File.Exists(path))
+            {
+                throw new FileNotFoundException(
+                    $"File not found for {nameof(AgentConfig)}.", path);
+            }
+
+            return AgentConfig.FromJson(File.ReadAllText(path));
         }
 
         /// <summary>
