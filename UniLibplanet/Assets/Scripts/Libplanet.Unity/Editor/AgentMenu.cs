@@ -12,7 +12,7 @@ namespace Libplanet.Unity.Editor
         /// Opens the agent config file location.
         /// </summary>
         [MenuItem("Tools/Libplanet/Agent config/Open agent config file location")]
-        public static void OpenSwarmConfigLocation()
+        public static void OpenAgentConfigLocation()
         {
             const string title = "Open agent config file location";
             string path = Paths.AgentConfigPath;
@@ -37,7 +37,7 @@ namespace Libplanet.Unity.Editor
         /// Creates a agent config file.
         /// </summary>
         [MenuItem("Tools/Libplanet/Agent config/Create agent config")]
-        public static void CreateSwarmConfig()
+        public static void CreateAgentConfig()
         {
             const string title = "Create agent config";
             string path = Paths.AgentConfigPath;
@@ -63,7 +63,7 @@ namespace Libplanet.Unity.Editor
                 directory.Create();
             }
 
-            Utils.CreateSwarmConfig(path);
+            Utils.CreateAgentConfig(path);
             EditorUtility.DisplayDialog(title, "New agent config created.", "Close");
         }
 
@@ -71,7 +71,7 @@ namespace Libplanet.Unity.Editor
         /// Removes the agent config file.
         /// </summary>
         [MenuItem("Tools/Libplanet/Agent config/Delete agent config")]
-        public static void DeleteSwarmConfig()
+        public static void DeleteAgentConfig()
         {
             const string title = "Delete agent config";
             string path = Paths.SwarmConfigPath;
